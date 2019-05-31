@@ -1,0 +1,197 @@
+<!-- ExMobi UIXML(XHTML)文件 -->
+<html>
+	<head>
+		<meta content="charset=utf-8"/>
+		<title show="false"/>
+		<link rel="stylesheet" type="text/css" href="res:css/global.css" />
+		<script src="res:script/exmobijs/app.js"/>
+		<script src="res:script/exmobijs/base.js"/>
+        <script src="res:script/exmobijs/utility.js"/>
+        <script src="res:script/exmobijs/date.js"/>
+        
+<script>
+	<![CDATA[
+		function init() {
+			var userName = window.getStringSession("userFullCode");
+			window.userName=userName;
+			$("input_time").val(timeStamp2String());
+			$("user_name").val(userName);
+	    }
+		function testtime() {
+			var time=$("input_time").val();
+			//var patt = new RegExp("W3School");
+			var patt=/^(([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})(\/)(((0[13578]|1[02])(\/)(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(\/)(0[1-9]|[12][0-9]|30))|(02(\/)(0[1-9]|[1][0-9]|2[0-8])))|  ((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[13579][26])00))(\/)02(\/)29))\s([0][0-9]|[1][0-9]|[2][0-3]):([0-5][0-9]):([0-5][0-9])$/
+			var result = patt.test(time);
+			if (result==true){
+				$("input_time").val(time);
+			}else{
+				alert("格式错误，恢复当前时间");
+				$("input_time").val(timeStamp2String());
+			}
+		}
+		//日期处理函数
+		function timeStamp2String(){  
+		    var datetime = new Date();  
+		    var year = datetime.getFullYear();  
+		    var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;  
+		    var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();  
+		    var hour = datetime.getHours()< 10 ? "0" + datetime.getHours() : datetime.getHours();  
+		    var minute = datetime.getMinutes()< 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();  
+		    var second = datetime.getSeconds()< 10 ? "0" + datetime.getSeconds() : datetime.getSeconds();  
+		    return year + "/" + month + "/" + date+" "+hour+":"+minute+":"+second; 
+	    }  
+	    function two() {
+	    	var progressbarObj=new ProgressBar();
+			progressbarObj.setMessage("提交中...");
+			progressbarObj.show();
+			window.progressbarObj=progressbarObj;
+	    	var product_no=$("product_no").val();
+	    	var deceive_locationSelectPre=document.getElementById("deceive_locationSelect");
+	    	var deceive_locationSelect=deceive_locationSelectPre.options[deceive_locationSelectPre.selectedIndex].text;
+	    	var deceive_name=$("deceive_name").val();
+	    	var procedurePre=document.getElementById("procedure");
+	    	var procedure=procedurePre.options[procedurePre.selectedIndex].text;
+	    	var input_time=$("input_time").val();
+	    	var user_name=$("user_name").val();
+	    	var system_time=timeStamp2String();
+	    	data="product_no="+product_no
+		    	 +"&deceive_locationSelect=" +deceive_locationSelect
+		    	 +"&deceive_name=" +deceive_name
+		    	 +"&procedure=" +procedure
+		    	 +"&input_time=" +input_time
+		    	 +"&user_name=" +user_name
+		    	 +"&system_time=" +system_time
+		    	 +"&status=" +"开始"
+				 +"&flag=" +"two";
+			$a.go("http://10.40.121.69:9999/coldBackStage/two", "post", data, two_success, two_fail, '{"Content-Type":"application/x-www-form-urlencoded; charset=utf-8","Accept-Language":"zh-cn"}', false);
+		}
+	    function two_success(data) {
+	    	progressbarObj.cancel();
+	    	var json = eval("("+data.responseText+")");
+			if(json[0].msgCode==1){
+				alert("录入成功");
+			}else if(json[0].msgCode<1){
+				alert("录入失败");
+			}else{
+				alert("有重复数据。该设备未结束工作，请结束后录入");
+			}
+		}
+		function two_fail(data) {
+			progressbarObj.cancel();
+			alert("服务器异常，请求数据失败。");
+		}
+		function eight(){
+			var progressbarObj=new ProgressBar();
+			progressbarObj.setMessage("提交中...");
+			progressbarObj.show();
+			window.progressbarObj=progressbarObj;
+			var deceive_locationSelect=document.getElementById("deceive_locationSelect");
+			var deceive_location=deceive_locationSelect.options[deceive_locationSelect.selectedIndex].text;
+			data="deceive_location=" +deceive_location
+			   	  +"&flag=" +"eight";
+			$a.go("http://10.40.121.69:9999/coldBackStage/eight", "post", data, eight_success, eight_fail, '{"Content-Type":"application/x-www-form-urlencoded; charset=utf-8","Accept-Language":"zh-cn"}', false);
+		}
+		function eight_success(data) {
+			progressbarObj.cancel();
+			var json = eval("("+data.responseText+")");
+			var innerHtml="";
+			if(json!=null){
+				for(i=0;i<json.length;i++){
+				innerHtml +="<option onclick='selectdn()' value='"+i+"'>"+json[i].deceive_name+"</option>";
+				document.getElementById("deceive_nameSelect").innerHTML=innerHtml;
+				}
+			}else{
+				alert("无数据");
+			}
+		}
+		function eight_fail(data) {
+			progressbarObj.cancel();
+			alert("服务器异常，请求数据失败。");
+		}
+		function selectdn() {
+			var deceive_nameSelect=document.getElementById("deceive_nameSelect");
+			var deceive_name=deceive_nameSelect.options[deceive_nameSelect.selectedIndex].text;
+			$("deceive_name").val(deceive_name);
+		}
+		//产品编号
+		function startpn() {
+			var dataJson = {};
+			dataJson.type = "0";//0：单次扫码；1：多次扫码，一次返回扫码结果；2：多次扫码，每均返回扫码结果
+			dataJson.photo = "1";//支持相册选择
+			DecodeUtil.scan(dataJson, callBackFun1);
+		}
+		function callBackFun1(jsonData) {
+			var text = "";
+			if (jsonData.errCode == 0) {
+				text =  jsonData.result ;
+			}
+			if (jsonData.errCode == -1) {
+				text = "";
+			}
+			$("product_no").val(text);
+		}
+		//设备名称
+		function startdn() {
+			var dataJson = {};
+			dataJson.type = "0";//0：单次扫码；1：多次扫码，一次返回扫码结果；2：多次扫码，每均返回扫码结果
+			dataJson.photo = "1";//支持相册选择
+			DecodeUtil.scan(dataJson, callBackFun2);
+		}
+		function callBackFun2(jsonData) {
+			var text = "";
+			if (jsonData.errCode == 0) {
+				text =  jsonData.result ;
+			}
+			if (jsonData.errCode == -1) {
+				text = "";
+			}
+			$("deceive_name").val(text);
+		}
+		function returnMainMenu() {
+			window.open("res:page/home.uixml?userName=" + userName, false);
+		}
+		]]>
+		</script>
+	</head>
+	<header>
+		<titlebar id="titlebarid" title="录入产品加工信息"  hidericon="true"iconhref="returnMainMenu()"/>
+	</header>
+	<body onload="init()">
+		<div id="product_noText" style="display: inline;width:30%;">产品编号：</div>
+            <input type="text" style="width:57%" hideborder="false"  id="product_no" ></input>
+         	<input type="button" id="product_noDecode" name="" onclick="startpn()" style="width:13%;border-size:0; height:33px;display:inline;overlay:url(res:image/list/decode.jpg)"></input>
+        	<br/>
+        <div id="deceive_locationText" style="display: inline;width:30%;">车      间：</div>
+			<select id="deceive_locationSelect" style="width:70%">
+				<option value="0" onclick="">请先选择车间，再选择设备</option>
+	        	<option value="1" onclick="eight()">加热间-1</option>
+	            <option value="2" onclick="eight()">加热间-2</option>
+	            <option value="3" onclick="eight()">加热间-3</option>
+	            <option value="4" onclick="eight()">B跨</option>
+	        </select>
+       		<br/>
+       	<div id="deceive_nameText" style="display: inline;width:30%">设备名称：</div>
+       		<input type="text" style="width:44%" hideborder="false"  id="deceive_name" ></input>
+		  	<select id="deceive_nameSelect" style="width:13%">
+          	</select>
+          	<input type="button" id="deceive_nameDecode" name="" onclick="startdn()"style="width:13%;border-size:0;height:33px;display:inline;overlay:url(res:image/list/decode.jpg)"></input>
+       		<br/>
+		<div id="procedureText" style="display: inline;width:30%;">工      序：</div>
+			<select id="procedure" style="width:70%">
+	        	<option value="GX001">粗抽</option>
+	            <option value="GX002">检漏</option>
+	            <option value="GX003">精抽</option>
+	        </select>
+        	<br/>
+       <div id="input_timeText" style="display: inline;width:30%;">录入时间：</div>
+            <input type="text" style="width:70%" hideborder="false"  id="input_time"value=""onchange="testtime()" ></input>
+       		<br/>
+       <!--<div id="user_nameText" style="display: inline;width:30%;">操作人员：</div>-->
+          	<input type="hidden"  id="user_name"></input>
+       	  	<br/>
+	</body>
+	<footer>
+       <input type="submit" value="开         始" onclick="two()" style="width:60%;align:center;"></input>
+    </footer>
+	
+</html>

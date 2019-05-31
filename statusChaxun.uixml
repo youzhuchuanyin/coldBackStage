@@ -1,0 +1,122 @@
+<!-- ExMobi UIXML(XHTML)文件 -->
+<html>
+	<head>
+		<meta content="charset=utf-8"/>
+		<title show="false"/>
+		<link rel="stylesheet" type="text/css" href="res:css/global.css" />
+		<script src="res:script/exmobijs/app.js"/>
+		<script src="res:script/exmobijs/base.js"/>
+        <script src="res:script/exmobijs/utility.js"/>
+        <script src="res:script/exmobijs/date.js"/>
+		<script>
+		<![CDATA[
+			function init(){
+				var userName = window.getStringSession("userFullCode");
+				window.userName=userName;
+  			}
+  			function pageOne(){
+  				var progressbarObj = new ProgressBar();
+				window.progressbarObj=progressbarObj;
+  				progressbarObj.setMessage("加载中...");
+				progressbarObj.show();
+				data="deceive_location=" +"加热间-1"
+					  +"&flag=" +"one";
+				$a.go("http://10.40.121.69:9999/coldBackStage/one", "post", data, one_success, one_fail, '{"Content-Type":"application/x-www-form-urlencoded; charset=utf-8","Accept-Language":"zh-cn"}', false);
+  			}
+  			function pageTwo(){
+  				progressbarObj.setMessage("加载中...");
+				progressbarObj.show();
+  				data="deceive_location=" +"加热间-2"
+					  +"&flag=" +"one";
+				$a.go("http://10.40.121.69:9999/coldBackStage/one", "post", data, one_success, one_fail, '{"Content-Type":"application/x-www-form-urlencoded; charset=utf-8","Accept-Language":"zh-cn"}', false);
+  			}
+  			function pageThree(){
+  				progressbarObj.setMessage("加载中...");
+				progressbarObj.show();
+  				data="deceive_location=" +"加热间-3"
+					  +"&flag=" +"one";
+				$a.go("http://10.40.121.69:9999/coldBackStage/one", "post", data, one_success, one_fail, '{"Content-Type":"application/x-www-form-urlencoded; charset=utf-8","Accept-Language":"zh-cn"}', false);
+  			}
+  			function pageFour(){
+  				progressbarObj.setMessage("加载中...");
+				progressbarObj.show();
+  				data="deceive_location=" +"B跨"
+					  +"&flag=" +"one";
+				$a.go("http://10.40.121.69:9999/coldBackStage/one", "post", data, one_success, one_fail, '{"Content-Type":"application/x-www-form-urlencoded; charset=utf-8","Accept-Language":"zh-cn"}', false);
+  			}
+  			function one_success(data){
+  				progressbarObj.cancel();
+				var json = eval("("+data.responseText+")");
+				var innerHtml="";
+				if(json!=null){
+					for(i=0;i<json.length;i++){
+						if(json[i].deceive=="真空机组"){
+							var sndcaption="电离规:"+json[i].dian_li_gui+"Pa";
+						}else if (json[i].deceive=="内加热"){
+							var sndcaption="加热温度:"+json[i].heating_temp+"℃  回风温度:"+json[i].return_temp+"℃";
+						}else{
+							var sndcaption="温度1:"+json[i].temp_1+"℃  温度2:"+json[i].temp_6+"℃";
+						}
+						var ricon="";
+						if(json[i].deceive_statu=="运行"){
+							ricon="res:image/list/green.png";
+						}else if(json[i].deceive_statu=="关机"){
+							ricon="res:image/list/ash.png";
+						}else if(json[i].deceive_statu=="停止"){
+							ricon="res:image/list/yello.png";
+						}else{
+							ricon="res:image/list/red.png";
+						}
+						//alert(json[i].deceive_name);
+						innerHtml += "<listitem  type='twoline' icon=''  caption='" + json[i].deceive_name + "' sndcaption='" + sndcaption +"'rcaption='"+json[i].deceive_statu+"' sndshowtype='multiple'  ricon='"+ricon+"'/>";
+						if(json[i].deceive_location=="B跨"){
+							document.getElementById("page4").innerHTML=innerHtml;
+						}else if(json[i].deceive_location=="加热间-1"){
+							document.getElementById("page1").innerHTML=innerHtml;
+						}else if(json[i].deceive_location=="加热间-2"){
+							document.getElementById("page2").innerHTML=innerHtml;
+						}else{
+							document.getElementById("page3").innerHTML=innerHtml;
+						}
+					}
+					}
+					else{
+					alert("无数据");
+					}
+				
+			}
+			function one_fail(data){
+				progressbarObj.cancel();
+				alert("服务器错误！");
+			}
+			function returnMainMenu() {
+				window.open("res:page/home.uixml?userName=" + userName,false);
+			}
+		]]>
+		</script>
+	</head>
+	<header>
+		<titlebar title="查询产品状态信息" iconhref="returnMainMenu()" hidericon="true" />
+		<tabbar showtype="text" tabtype="slide" col="4" class="current">
+			<tab text="加热间-1" bindpage="page1"/>
+			<tab text="加热间-2" bindpage="page2"/>
+			<tab text="加热间-3" bindpage="page3"/>
+			<tab text="B跨" bindpage="page4"/>
+		</tabbar>
+	</header>
+	<body onload="init()">
+	    <page id="page1" onstart="pageOne()">
+			
+	    </page>
+	    <page id="page2" onstart="pageTwo()">
+	    	
+	    </page>
+	    <page id="page3" onstart="pageThree()">
+	
+	    </page>
+	    <page id="page4" onstart="pageFour()">
+			
+	    </page>
+
+	</body>
+</html>

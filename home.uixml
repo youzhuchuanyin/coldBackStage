@@ -1,0 +1,46 @@
+﻿<!-- ExMobi UIXML(XHTML)文件 -->
+<html>
+	<head>
+		<meta content="charset=utf-8"/>
+		<title show="false"/>
+		<link rel="stylesheet" type="text/css" href="res:css/global.css" />
+		<script src="res:script/exmobijs/app.js"/>
+		<script src="res:script/exmobijs/base.js"/>
+        <script src="res:script/exmobijs/utility.js"/>
+        <script src="res:script/exmobijs/date.js"/>
+<script>
+	<![CDATA[
+	var userFullCode = window.getNativeParameter("username");
+	//userFullCode='010100601170';
+		window.setStringSession("userFullCode", userFullCode);
+		//12位工号
+		function init(){
+			//获取员工权限
+		}
+		function backFun() {
+				var str = DeviceUtil.getOs();
+				/*var script = "script:exit";
+				 ClientUtil.execScript(script);*/
+				if (str == "android") {
+					var script = "script:exitapp";
+					ClientUtil.execScript(script);
+				} else {
+					var script = "script:close";
+					ClientUtil.execScript(script);
+				}
+			}
+	]]>
+		</script>
+	</head>
+	<header>
+		<!--<titlebar title="主页" icon="theme:image/icon/home.png"hidericon="true" iconhref="script:close"/>-->
+		<titlebar title="主页" icon="theme:image/icon/home.png"hidericon="true" iconhref="backFun()"/>
+	</header>
+	<body>
+		<div id="main">
+			<listitem type="oneline" caption="查询设备状态" href="res:page/statusChaxun.uixml" icon='theme:image/icon/form.png'></listitem>
+			<listitem type="oneline" caption="录入产品加工信息" href="res:page/shebei_add.uixml" icon='theme:image/icon/add.png'></listitem>
+			<listitem type="oneline" caption="查询产品加工状态" href="res:page/shebei_list.uixml" icon='theme:image/icon/form.png'></listitem>
+		</div>
+	</body>
+</html>

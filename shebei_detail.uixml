@@ -1,0 +1,181 @@
+<!-- ExMobi UIXML(XHTML)文件 -->
+<html>
+	<head>
+		<meta content="charset=utf-8"/>
+		<title show="false"/>
+		<link rel="stylesheet" type="text/css" href="res:css/global.css" />
+		<script src="res:script/exmobijs/app.js"/>
+		<script src="res:script/exmobijs/base.js"/>
+        <script src="res:script/exmobijs/utility.js"/>
+        <script src="res:script/exmobijs/date.js"/>
+<script>
+	<![CDATA[
+		var userFullCode = window.getStringSession("userFullCode");//12位工号
+		function init() {
+			var param=window.getParameter("j");
+		    var j=EncryptionUtil.base64Decode(param);
+			var o=eval("("+j+")");
+			nine(o.deceive_location,o.deceive_name);
+			window.setStringSession("deceive_name", o.deceive_name);
+			window.setStringSession("deceive_location", o.deceive_location);
+		}
+		function nine(deceive_location,deceive_name) {
+			var progressbarObj=new ProgressBar();
+			progressbarObj.setMessage("查询中...");
+			progressbarObj.show();
+			window.progressbarObj=progressbarObj;
+			data = "deceive_location=" +deceive_location+"&deceive_name="+deceive_name+"&flag="+"nine";
+			$a.go("http://10.40.121.69:9999/coldBackStage/nine", "post", data, nine_success, nine_fail, '{"Content-Type":"application/x-www-form-urlencoded; charset=utf-8","Accept-Language":"zh-cn"}', false);
+		}
+		function nine_success(data) {
+			progressbarObj.cancel();
+			var json = eval("("+data.responseText+")");
+			var innerHtml="";
+			for(i=0;i<json.length;i++){
+				var status=json[i].status;
+				var product_no=json[i].product_no;
+				var procedure=json[i].procedure;
+				var deceive_name=json[i].deceive_name;
+				var input_time=json[i].input_time;
+				var system_time=json[i].system_time;
+				var user_name=json[i].user_name;
+				var deceive_location=json[i].deceive_location;
+				if(status=="开始"){
+					$("input_time").val(input_time);
+				}else{
+					$("input_time").val(system_time);
+				}
+				$("product_no").val(product_no);
+				$("procedure").val(procedure);
+				$("status").val(status);
+				$("deceive_name").rcaption=deceive_name;
+				$("user_name").rcaption=user_name;
+				$("deceive_location").rcaption=deceive_location;
+			}
+		}
+		function nine_fail(data) {
+			progressbarObj.cancel();
+			alert("服务器异常，请求数据失败。");
+		}
+		function six(){
+			var status=$("status").val();
+			if(status=="结束"){
+				alert("已结束无法修改");
+				return;
+			}
+			progressbarObj.setMessage("提交修改中...");
+			progressbarObj.show();
+			var deceive_location=window.getStringSession("deceive_location");
+			var deceive_name=window.getStringSession("deceive_name");
+			var product_no=$("product_no").val();
+			var input_time=$("input_time").val();
+			var procedure=$("procedure").val();
+			data = "deceive_location=" +deceive_location
+					+"&deceive_name="+deceive_name
+					+"&product_no="+product_no
+					+"&input_time="+input_time
+					+"&procedure="+procedure
+					+"&status="+status
+					+"&flag="+"six";
+			$a.go("http://10.40.121.69:9999/coldBackStage/six", "post", data, six_success, six_fail, '{"Content-Type":"application/x-www-form-urlencoded; charset=utf-8","Accept-Language":"zh-cn"}', false);
+		}
+		function six_success(data){
+			progressbarObj.cancel();
+			var json = eval("("+data.responseText+")");
+			if(json[0].msgCode==1){
+				alert("修改成功!",returnMainMenu);
+			}else if(json[0].msgCode==0){
+				alert("修改失败！");
+			}else{
+				alert("未知错误");
+		}
+		}
+		function six_fail(data){
+			progressbarObj.cancel();
+			alert("服务器异常，请求数据失败。");
+		}
+		function seven() {
+			progressbarObj.setMessage("正在结束...");
+			progressbarObj.show();
+			var deceive_location=window.getStringSession("deceive_location");
+			var deceive_name=window.getStringSession("deceive_name");
+			var system_time=timeStamp2String();
+			data = "deceive_location=" +deceive_location
+					+"&deceive_name="+deceive_name
+					+"&system_time="+system_time
+					+"&status="+"结束"
+					+"&flag="+"seven";
+			$a.go("http://10.40.121.69:9999/coldBackStage/seven", "post", data, seven_success, seven_fail, '{"Content-Type":"application/x-www-form-urlencoded; charset=utf-8","Accept-Language":"zh-cn"}', false);
+		}
+		function seven_success(data){
+			progressbarObj.cancel();
+			var json = eval("("+data.responseText+")");
+			if(json[0].msgCode==1){
+				alert("已结束!",returnMainMenu);
+			}else if(json[0].msgCode==0){
+				alert("失败！");
+			}else{
+				alert("未知错误");
+			}
+		}
+		function seven_fail(data){
+			progressbarObj.cancel();
+			alert("服务器异常，请求数据失败。");
+		}
+		function testtime() {
+			var inputTime=$("inputTime").val();
+			//var patt = new RegExp("W3School");
+			var patt=/^(([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})(\/)(((0[13578]|1[02])(\/)(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(\/)(0[1-9]|[12][0-9]|30))|(02(\/)(0[1-9]|[1][0-9]|2[0-8])))|  ((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[13579][26])00))(\/)02(\/)29))\s([0][0-9]|[1][0-9]|[2][0-3]):([0-5][0-9]):([0-5][0-9])$/
+			var result = patt.test(inputTime);
+			if (result==true){
+				$("inputTime").val(inputTime);
+			}else{
+				alert("时间格式错误");
+				 $("inputTime").val(timeStamp2String());
+			}
+		}
+		function timeStamp2String(){  
+		    var datetime = new Date();  
+		    var year = datetime.getFullYear();  
+		    var month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;  
+		    var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();  
+		    var hour = datetime.getHours()< 10 ? "0" + datetime.getHours() : datetime.getHours();  
+		    var minute = datetime.getMinutes()< 10 ? "0" + datetime.getMinutes() : datetime.getMinutes();  
+		    var second = datetime.getSeconds()< 10 ? "0" + datetime.getSeconds() : datetime.getSeconds();  
+		    return year + "/" + month + "/" + date+" "+hour+":"+minute+":"+second; 
+    	} 
+	    function returnMainMenu() {
+			window.open("res:page/shebei_list.uixml?userName=" + userFullCode,false);
+		}
+	]]>
+	</script>
+	</head>
+	<header>
+		<titlebar title="产品加工状态信息(可编辑)" iconhref="returnMainMenu()" hidericon="true"></titlebar>
+	</header>
+	
+	<body onload="init()">
+       <div id="leakDetector1" style="display: inline;width:30%;">产品名称：</div>
+          <input type="text" style="width:70%" hideborder="false"  id="product_no" ></input>
+       	  <br/>
+       <div id="nitrReplace1" style="display: inline;width:30%;">操作时间：</div>
+          <input type="text" style="width:70%" hideborder="false"  id="input_time" onchange="testtime()"></input>
+       	  <br/>
+       <div id="furnace1" style="display: inline;width:30%;">工     序：</div>
+          <input type="text" style="width:70%" hideborder="false"  id="procedure" ></input>
+          <br/>
+       <div id="heater1" style="display: inline;width:30%;">状     态：</div>
+          <input type="text" style="width:70%" hideborder="false"  id="status" ></input>
+       	  <br/>
+       <listitem  type='oneline' icon=''  caption="设备名称:" rcaption="" id="deceive_name"style='width:100%' />
+       <listitem  type='oneline' icon=''  caption="用户编号:" rcaption="" id="user_name"style='width:100%' />
+       <listitem  type='oneline' icon=''  caption="所在车间:" rcaption="" id="deceive_location"style='width:100%' />
+	</body>
+
+	<footer>
+			<input type="button" value="button" onclick="" style=" visibility:hidden;width: 20%"></input>
+           <input type="submit" value="修改" onclick="six()" style="width:30%;"></input>
+           <input type="submit" value="结束" onclick="seven()" style="width:30%;"></input>
+    </footer>
+
+</html>
